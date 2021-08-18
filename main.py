@@ -3,7 +3,7 @@ import math
 import time
 pygame.init()
 window = pygame.display.set_mode((350, 350))
-window2 = pygame.display.set_mode((350, 350))
+
 
 run = True
 keyDown = [False,False,False,False,False,False]
@@ -49,8 +49,19 @@ while run:
 
     rects = []
     lightLevels = []
+    rectRed = [0,0,0,0,0,255]
+    rectRedToDraw = []
+    rectGreen = [0,255,255,255,255,255]
+    rectGreenToDraw = []
+    rectBlue = [255,0,0,0,0,0]
+    rectBlueToDraw = []
     rects.append(pygame.Rect(70,70,50,50))
-    rects.append(pygame.Rect(0,330,350,20))
+    rects.append(pygame.Rect(0, 330, 350, 20))
+    rects.append(pygame.Rect(0, 0, 350, 20))
+    rects.append(pygame.Rect(0, 0, 20, 350))
+    rects.append(pygame.Rect(330, 0, 20, 350))
+    rects.append(pygame.Rect(180, 180, 30 , 30))
+
     if keyDown[1]:
         angle += 2
     if keyDown[3]:
@@ -79,7 +90,7 @@ while run:
     dumbStupid = -1
     for rectNum in rects:
         dumbStupid += 1
-        #pygame.draw.rect(window,(0,255,255),rects[dumbStupid])
+        #pygame.draw.rect(window,(rectRed[dumbStupid],rectGreen[dumbStupid],rectBlue[dumbStupid]),rects[dumbStupid])
     funnycolor = 0
     renderRects = []
     if angle >= 360:
@@ -102,6 +113,9 @@ while run:
                     over = angleScanning-angle
                     renderRects.append(pygame.Rect(350-lineOn*5.8,180-height/2,6,height))
                     lightLevels.append(i/350*250)
+                    rectRedToDraw.append(rectRed[dumbStupid])
+                    rectGreenToDraw.append(rectGreen[dumbStupid])
+                    rectBlueToDraw.append(rectBlue[dumbStupid])
                     breakMe = True
                     break
             if(breakMe):
@@ -112,7 +126,17 @@ while run:
     iterationB = -1
     for rectNum in renderRects:
         iterationB +=1
-        pygame.draw.rect(window,(0,250-lightLevels[iterationB],0),renderRects[iterationB])
+        thisRed = rectRedToDraw[iterationB] - 1.2*lightLevels[iterationB]
+        thisGreen = rectGreenToDraw[iterationB] - 1.2*lightLevels[iterationB]
+        thisBlue = rectBlueToDraw[iterationB] - 1.2*lightLevels[iterationB]
+        if thisRed < 0:
+            thisRed = 0
+        if thisBlue < 0:
+            thisBlue = 0
+        if thisGreen < 0:
+            thisGreen = 0
+
+        pygame.draw.rect(window,(thisRed,thisGreen,thisBlue),renderRects[iterationB])
 
     pygame.display.flip()
 
