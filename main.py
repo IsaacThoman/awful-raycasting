@@ -63,16 +63,15 @@ while run:
         playerSpeed = 0-2
     playerSideSpeed = 0
     if keyDown[4]:
-        playerSideSpeed = 2
+        startX = startX + 2 * math.cos(angle + 270 * 3.1 / 180)
+        startY = startY + 2 * math.sin(angle + 270 * 3.1 / 180)
     if keyDown[5]:
-        playerSideSpeed = 0-2
+        startX = startX + 2 * math.cos(angle + 90 * 3.1 / 180)
+        startY = startY + 2 * math.sin(angle + 90 * 3.1 / 180)
 
+    startX = startX + playerSpeed * math.cos(angle * 3.1 / 180)
+    startY = startY + playerSpeed * math.sin(angle * 3.1 / 180)
 
-    startX = int(startX + playerSpeed * math.cos(angle * 3.1 / 180))
-    startY = int(startY + playerSpeed * math.sin(angle * 3.1 / 180))
-
-    startX = int(startX + playerSideSpeed * math.cos(angle+90 * 3.1 / 180))
-    startY = int(startY + playerSideSpeed * math.sin(angle+90 * 3.1 / 180))
 
 
 
@@ -101,14 +100,14 @@ while run:
                 if(myX>rects[dumbStupid].left and myX < rects[dumbStupid].right and myY > rects[dumbStupid].top and myY < rects[dumbStupid].bottom):
                     height = 350-i
                     over = angleScanning-angle
-                    renderRects.append(pygame.Rect(300-lineOn*4,200-height/2,4,height))
+                    renderRects.append(pygame.Rect(350-lineOn*5.8,180-height/2,6,height))
                     lightLevels.append(i/350*250)
                     breakMe = True
                     break
             if(breakMe):
                 breakMe=False
                 break
-
+            #if angleScanning == angle:
             #window.set_at((myX, myY), (255, 0, 0))
     iterationB = -1
     for rectNum in renderRects:
