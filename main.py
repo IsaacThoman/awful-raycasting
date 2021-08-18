@@ -10,6 +10,8 @@ keyDown = [False,False,False,False,False,False]
 angle = 1;
 startX = 175
 startY = 175
+handImg = pygame.image.load('hands.png')
+
 while run:
     time.sleep(0.016)
     for event in pygame.event.get():
@@ -137,7 +139,7 @@ while run:
             thisGreen = 0
 
         pygame.draw.rect(window,(thisRed,thisGreen,thisBlue),renderRects[iterationB])
-
+    window.blit(handImg, (0, 0))
     pygame.display.flip()
 
 pygame.quit()
