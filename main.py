@@ -2,16 +2,16 @@ import pygame
 import math
 import time
 pygame.init()
-window = pygame.display.set_mode((350, 350))
+window = pygame.display.set_mode((700, 700))
 
-
+displayMode = 0
 run = True
 keyDown = [False,False,False,False,False,False]
-angle = 1;
+angle = 195
 startX = 175
 startY = 175
 handImg = pygame.image.load('hands.png')
-
+handImg = pygame.transform.scale(handImg, (700, 700))
 while run:
     time.sleep(0.016)
     for event in pygame.event.get():
@@ -75,15 +75,28 @@ while run:
     if keyDown[2]:
         playerSpeed = 0-2
     playerSideSpeed = 0
-    if keyDown[4]:
-        startX = startX + 2 * math.cos(angle + 270 * 3.1 / 180)
-        startY = startY + 2 * math.sin(angle + 270 * 3.1 / 180)
-    if keyDown[5]:
-        startX = startX + 2 * math.cos(angle + 90 * 3.1 / 180)
-        startY = startY + 2 * math.sin(angle + 90 * 3.1 / 180)
+    #if keyDown[4]:
+        #startX = startX + 2 * math.cos(angle + 270 * 3.1 / 180)
+        #startY = startY + 2 * math.sin(angle + 270 * 3.1 / 180)
+    #if keyDown[5]:
+        #startX = startX + 2 * math.cos(angle + 90 * 3.1 / 180)
+        #startY = startY + 2 * math.sin(angle + 90 * 3.1 / 180)
 
-    startX = startX + playerSpeed * math.cos(angle * 3.1 / 180)
-    startY = startY + playerSpeed * math.sin(angle * 3.1 / 180)
+    newStartX = startX + playerSpeed * math.cos(angle * 3.1 / 180)
+    newStartY = startY + playerSpeed * math.sin(angle * 3.1 / 180)
+    dumbStupid2 = -1
+    moveHere = True
+    for rectNum2 in rects:
+        dumbStupid2 += 1
+        if (newStartX > rects[dumbStupid2].left and newStartX < rects[dumbStupid2].right and newStartY > rects[dumbStupid2].top and newStartY < rects[dumbStupid2].bottom):
+            moveHere = False
+            break
+    if moveHere:
+        startX = newStartX
+        startY = newStartY
+
+
+
 
 
 
@@ -92,7 +105,8 @@ while run:
     dumbStupid = -1
     for rectNum in rects:
         dumbStupid += 1
-        #pygame.draw.rect(window,(rectRed[dumbStupid],rectGreen[dumbStupid],rectBlue[dumbStupid]),rects[dumbStupid])
+        if displayMode == 1:
+            pygame.draw.rect(window,(rectRed[dumbStupid],rectGreen[dumbStupid],rectBlue[dumbStupid]),rects[dumbStupid])
     funnycolor = 0
     renderRects = []
     if angle >= 360:
@@ -123,9 +137,10 @@ while run:
             if(breakMe):
                 breakMe=False
                 break
-            #if angleScanning == angle:
-            #window.set_at((myX, myY), (255, 0, 0))
+            if displayMode == 1:
+                window.set_at((myX, myY), (255, 0, 0))
     iterationB = -1
+    scaledRects = [];
     for rectNum in renderRects:
         iterationB +=1
         thisRed = rectRedToDraw[iterationB] - 1.2*lightLevels[iterationB]
@@ -137,9 +152,12 @@ while run:
             thisBlue = 0
         if thisGreen < 0:
             thisGreen = 0
-
-        pygame.draw.rect(window,(thisRed,thisGreen,thisBlue),renderRects[iterationB])
-    window.blit(handImg, (0, 0))
+        scaleMultiplier = window.get_width()/350
+        scaledRects.append(pygame.Rect(renderRects[iterationB].x*scaleMultiplier, renderRects[iterationB].y*scaleMultiplier, renderRects[iterationB].width*scaleMultiplier, renderRects[iterationB].height*scaleMultiplier))
+        if displayMode == 0:
+            pygame.draw.rect(window,(thisRed,thisGreen,thisBlue),scaledRects[iterationB])
+    if displayMode == 0:
+        window.blit(handImg, (0,0))
     pygame.display.flip()
 
 pygame.quit()
