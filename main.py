@@ -5,13 +5,16 @@ pygame.init()
 window = pygame.display.set_mode((700, 700))
 
 displayMode = 0
+renderDistance = 350
 run = True
 keyDown = [False,False,False,False,False,False]
 angle = 195
 startX = 175
 startY = 175
 handImg = pygame.image.load('hands.png')
+redImg = pygame.image.load('red.png')
 handImg = pygame.transform.scale(handImg, (700, 700))
+redImg = pygame.transform.scale(redImg, (400, 400))
 while run:
     time.sleep(0.016)
     for event in pygame.event.get():
@@ -51,18 +54,21 @@ while run:
 
     rects = []
     lightLevels = []
-    rectRed = [0,0,0,0,0,255]
+    rectRed = [0,0,0,0,0,68]
     rectRedToDraw = []
-    rectGreen = [0,255,255,255,255,255]
+    rectGreen = [230,230,230,230,230,69]
     rectGreenToDraw = []
-    rectBlue = [255,0,0,0,0,0]
+    rectBlue = [0,0,0,0,0,70]
     rectBlueToDraw = []
-    rects.append(pygame.Rect(70,70,50,50))
+    #rects.append(pygame.Rect(70,70,50,50))
     rects.append(pygame.Rect(0, 330, 350, 20))
     rects.append(pygame.Rect(0, 0, 350, 20))
     rects.append(pygame.Rect(0, 0, 20, 350))
     rects.append(pygame.Rect(330, 0, 20, 350))
-    rects.append(pygame.Rect(180, 180, 30 , 30))
+    rects.append(pygame.Rect(300, 50, 20, 350))
+    rects.append(pygame.Rect(320, 325, 10, 3))
+
+    #rects.append(pygame.Rect(180, 180, 30 , 30))
 
     if keyDown[1]:
         angle += 2
@@ -75,12 +81,12 @@ while run:
     if keyDown[2]:
         playerSpeed = 0-2
     playerSideSpeed = 0
-    #if keyDown[4]:
-        #startX = startX + 2 * math.cos(angle + 270 * 3.1 / 180)
-        #startY = startY + 2 * math.sin(angle + 270 * 3.1 / 180)
-    #if keyDown[5]:
-        #startX = startX + 2 * math.cos(angle + 90 * 3.1 / 180)
-        #startY = startY + 2 * math.sin(angle + 90 * 3.1 / 180)
+    if keyDown[4]:
+        if displayMode == 0:
+            displayMode = 1
+        else:
+            displayMode = 0
+        time.sleep(0.2)
 
     newStartX = startX + playerSpeed * math.cos(angle * 3.1 / 180)
     newStartY = startY + playerSpeed * math.sin(angle * 3.1 / 180)
@@ -117,7 +123,7 @@ while run:
         #if angleScanning > 360:
             #angleScanning = angleScanning % 360
         angleScanning=angleScanning
-        for i in range(350):
+        for i in range(renderDistance):
             breakMe = False
             myX = int(startX + i * math.cos(angleScanning * 3.1 / 180))
             myY = int(startY + i * math.sin(angleScanning * 3.1 / 180))
@@ -141,6 +147,7 @@ while run:
                 window.set_at((myX, myY), (255, 0, 0))
     iterationB = -1
     scaledRects = [];
+    handBlitted = False
     for rectNum in renderRects:
         iterationB +=1
         thisRed = rectRedToDraw[iterationB] - 1.2*lightLevels[iterationB]
@@ -155,9 +162,13 @@ while run:
         scaleMultiplier = window.get_width()/350
         scaledRects.append(pygame.Rect(renderRects[iterationB].x*scaleMultiplier, renderRects[iterationB].y*scaleMultiplier, renderRects[iterationB].width*scaleMultiplier, renderRects[iterationB].height*scaleMultiplier))
         if displayMode == 0:
-            pygame.draw.rect(window,(thisRed,thisGreen,thisBlue),scaledRects[iterationB])
-    if displayMode == 0:
-        window.blit(handImg, (0,0))
+            if(rectRedToDraw[iterationB] == 68 and rectGreenToDraw[iterationB] == 69 and rectBlueToDraw[iterationB] == 70 and handBlitted == False):
+                window.blit(redImg,scaledRects[iterationB])
+                handBlitted = True
+            else:
+                pygame.draw.rect(window,(thisRed,thisGreen,thisBlue),scaledRects[iterationB])
+    #if displayMode == 0:
+        #window.blit(handImg, (0,0))
     pygame.display.flip()
 
 pygame.quit()
