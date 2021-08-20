@@ -1,9 +1,6 @@
 import pygame
 import math
 import time
-import threading
-
-
 pygame.init()
 window = pygame.display.set_mode((700, 700))
 
@@ -18,33 +15,6 @@ handImg = pygame.image.load('hands.png')
 redImg = pygame.image.load('red.png')
 handImg = pygame.transform.scale(handImg, (700, 700))
 redImg = pygame.transform.scale(redImg, (400, 400))
-
-rects = []
-rectRed = [0, 0, 0, 0, 68]
-
-rectGreen = [230, 230, 230, 230, 69]
-rectGreenToDraw = []
-rectBlue = [0, 0, 0, 0, 70]
-rectBlueToDraw = []
-# rects.append(pygame.Rect(70,70,50,50))
-rects.append(pygame.Rect(0, 330, 350, 20))
-rects.append(pygame.Rect(0, 0, 350, 20))
-rects.append(pygame.Rect(0, 0, 20, 350))
-rects.append(pygame.Rect(330, 0, 20, 350))
-#rects.append(pygame.Rect(300, 50, 20, 350))
-rects.append(pygame.Rect(320, 325, 5, 5))
-
-# rects.append(pygame.Rect(180, 180, 30 , 30))
-redGuyX = 100
-redGuyY = 100
-redGuyMX = 0.2
-redGuyMY = 1
-redSpinAngle = 90
-redSpinAngleChange = -50
-playerSpinSpeed = 0
-startedSpinAlready = False
-showHands = False
-handsToDraw = 1
 while run:
     time.sleep(0.016)
     for event in pygame.event.get():
@@ -66,9 +36,9 @@ while run:
             if event.key == pygame.K_e:
                 keyDown[5] = True
 
-
         if event.type == pygame.KEYUP:
 
+            # checking if key "A" was pressed
             if event.key == pygame.K_w:
                 keyDown[0]= False
             if event.key == pygame.K_a:
@@ -82,23 +52,29 @@ while run:
             if event.key == pygame.K_e:
                 keyDown[5] = False
 
-    rects[4] = pygame.Rect(redGuyX, redGuyY, 5, 5)
-    redGuyX += redGuyMX
-    redGuyY += redGuyMY
-    if redGuyX > 330:
-        redGuyMX = -1
-    if redGuyY > 330:
-        redGuyMY = -1
-    if redGuyX < 20:
-        redGuyMX = 1
-    if redGuyY < 20:
-        redGuyMY = 1
-    redSpinAngle += redSpinAngleChange
-    angle+=playerSpinSpeed
+    rects = []
+    lightLevels = []
+    rectRed = [0,0,0,0,0,68]
+    rectRedToDraw = []
+    rectGreen = [230,230,230,230,230,69]
+    rectGreenToDraw = []
+    rectBlue = [0,0,0,0,0,70]
+    rectBlueToDraw = []
+    #rects.append(pygame.Rect(70,70,50,50))
+    rects.append(pygame.Rect(0, 330, 350, 20))
+    rects.append(pygame.Rect(0, 0, 350, 20))
+    rects.append(pygame.Rect(0, 0, 20, 350))
+    rects.append(pygame.Rect(330, 0, 20, 350))
+    rects.append(pygame.Rect(300, 50, 20, 350))
+    rects.append(pygame.Rect(320, 325, 10, 3))
+
+    #rects.append(pygame.Rect(180, 180, 30 , 30))
+
     if keyDown[1]:
         angle += 2
     if keyDown[3]:
         angle += 0-2
+
     playerSpeed = 0
     if keyDown[0]:
         playerSpeed = 2
@@ -111,10 +87,7 @@ while run:
         else:
             displayMode = 0
         time.sleep(0.2)
-    lightLevels = []
-    rectRedToDraw = []
-    rectGreenToDraw = []
-    rectBlueToDraw = []
+
     newStartX = startX + playerSpeed * math.cos(angle * 3.1 / 180)
     newStartY = startY + playerSpeed * math.sin(angle * 3.1 / 180)
     dumbStupid2 = -1
@@ -130,9 +103,7 @@ while run:
 
 
 
-    if(startX - redGuyX < 15 and startY - redGuyY < 15):
-        playerSpinSpeed = -200
-        showHands = True
+
 
 
 
@@ -177,10 +148,6 @@ while run:
     iterationB = -1
     scaledRects = [];
     handBlitted = False
-    whereToDrawX = 0
-    whereToDrawY=0
-    heightOfImage = 0
-    drawIt = False
     for rectNum in renderRects:
         iterationB +=1
         thisRed = rectRedToDraw[iterationB] - 1.2*lightLevels[iterationB]
@@ -195,27 +162,13 @@ while run:
         scaleMultiplier = window.get_width()/350
         scaledRects.append(pygame.Rect(renderRects[iterationB].x*scaleMultiplier, renderRects[iterationB].y*scaleMultiplier, renderRects[iterationB].width*scaleMultiplier, renderRects[iterationB].height*scaleMultiplier))
         if displayMode == 0:
-            if(rectRedToDraw[iterationB] == 68 and rectGreenToDraw[iterationB] == 69 and rectBlueToDraw[iterationB] == 70):
-                whereToDrawX = scaledRects[iterationB].x
-                whereToDrawY = scaledRects[iterationB].y
-                heightOfImage = scaledRects[iterationB].height
-                drawIt = True
+            if(rectRedToDraw[iterationB] == 68 and rectGreenToDraw[iterationB] == 69 and rectBlueToDraw[iterationB] == 70 and handBlitted == False):
+                window.blit(redImg,scaledRects[iterationB])
+                handBlitted = True
             else:
                 pygame.draw.rect(window,(thisRed,thisGreen,thisBlue),scaledRects[iterationB])
-
-    if drawIt:
-        redImg2 = pygame.transform.scale(redImg, (heightOfImage, heightOfImage))
-        redImg2 = pygame.transform.rotate(redImg2,redSpinAngle)
-        window.blit(redImg2,(whereToDrawX - heightOfImage/2,whereToDrawY ))
-        drawIt = False
-    if showHands:
-        handsToDraw+=1
-        for handOn in range(handsToDraw):
-            window.blit(handImg, (handOn-200,handOn-200))
-    if handsToDraw > 14:
-        playerSpinSpeed = 0
-        showHands = False
-        handsToDraw = -100
+    #if displayMode == 0:
+        #window.blit(handImg, (0,0))
     pygame.display.flip()
 
 pygame.quit()
