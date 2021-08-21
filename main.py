@@ -8,9 +8,9 @@ displayMode = 0
 renderDistance = 350
 run = True
 keyDown = [False,False,False,False,False,False]
-angle = 195
-startX = 175
-startY = 175
+angle = 45
+startX = 80
+startY = 80
 handImg = pygame.image.load('hands.png')
 redImg = pygame.image.load('red.png')
 handImg = pygame.transform.scale(handImg, (700, 700))
@@ -54,21 +54,43 @@ while run:
 
     rects = []
     lightLevels = []
-    rectRed = [0,0,0,0,0,68]
+    rectRed = [0,0,0,0,200,200,255,230,230,230,230,200,200,255,255,50]
     rectRedToDraw = []
-    rectGreen = [230,230,230,230,230,69]
+    rectGreen = [230,230,230,230,200,200,255,0,0,0,0,200,200,255,0,0]
     rectGreenToDraw = []
-    rectBlue = [0,0,0,0,0,70]
+    rectBlue = [0,0,0,0,15,15,69,0,0,0,0,15,15,70,0,255]
     rectBlueToDraw = []
     #rects.append(pygame.Rect(70,70,50,50))
     rects.append(pygame.Rect(0, 330, 350, 20))
     rects.append(pygame.Rect(0, 0, 350, 20))
     rects.append(pygame.Rect(0, 0, 20, 350))
-    rects.append(pygame.Rect(330, 0, 20, 350))
-    rects.append(pygame.Rect(300, 50, 20, 350))
-    rects.append(pygame.Rect(320, 325, 10, 3))
+    rects.append(pygame.Rect(330, 0, 20, 350)) #outer green (0,230,0)
 
+
+    #rects.append(pygame.Rect(30+100, 20, 20, 30))
+    #rects.append(pygame.Rect(110+100, 20, 20, 30))
+    rects.append(pygame.Rect(0, 0, 0, 0))
+    rects.append(pygame.Rect(0, 0, 0, 0))
+
+
+    rects.append(pygame.Rect(0, 20, 350, 10))
+
+
+    rects.append(pygame.Rect(350, 330, 350, 20))
+    rects.append(pygame.Rect(350, 0, 350, 20))
+    rects.append(pygame.Rect(350, 0, 20, 350))
+    rects.append(pygame.Rect(680, 0, 20, 350))
     #rects.append(pygame.Rect(180, 180, 30 , 30))
+
+
+    rects.append(pygame.Rect(30+100+350, 20+80, 20, 30))
+    rects.append(pygame.Rect(110+100+350, 20+80, 20, 30))
+
+    rects.append(pygame.Rect(50+100+350, 30+80, 60, 10))
+
+    rects.append(pygame.Rect(100, 160, 50, 50))
+    rects.append(pygame.Rect(230, 160, 50, 50))
+
 
     if keyDown[1]:
         angle += 2
@@ -96,6 +118,10 @@ while run:
         dumbStupid2 += 1
         if (newStartX > rects[dumbStupid2].left and newStartX < rects[dumbStupid2].right and newStartY > rects[dumbStupid2].top and newStartY < rects[dumbStupid2].bottom):
             moveHere = False
+            if(rectRed[dumbStupid2] == 255 and rectGreen[dumbStupid2] == 255 and rectBlue[dumbStupid2] == 69):
+                moveHere = True
+                newStartX += 0
+                newStartY += 290
             break
     if moveHere:
         startX = newStartX
@@ -123,14 +149,23 @@ while run:
         #if angleScanning > 360:
             #angleScanning = angleScanning % 360
         angleScanning=angleScanning
+        myStartX = startX
+        myStartY = startY
         for i in range(renderDistance):
             breakMe = False
-            myX = int(startX + i * math.cos(angleScanning * 3.1 / 180))
-            myY = int(startY + i * math.sin(angleScanning * 3.1 / 180))
+            myX = int(myStartX + i * math.cos(angleScanning * 3.1 / 180))
+            myY = int(myStartY + i * math.sin(angleScanning * 3.1 / 180))
             dumbStupid = -1
             for rectNum in rects:
                 dumbStupid +=1
                 if(myX>rects[dumbStupid].left and myX < rects[dumbStupid].right and myY > rects[dumbStupid].top and myY < rects[dumbStupid].bottom):
+                    if (rectRed[dumbStupid] == 255 and rectGreen[dumbStupid] == 255 and rectBlue[dumbStupid] == 69):
+                        myStartX += 0
+                        myStartY += 290
+                        break
+                    if (rectRed[dumbStupid] == 255 and rectGreen[dumbStupid] == 255 and rectBlue[dumbStupid] == 70):
+                        myStartX += -350
+                        break
                     height = 350-i
                     over = angleScanning-angle
                     renderRects.append(pygame.Rect(350-lineOn*5.8,180-height/2,6,height))
@@ -150,9 +185,9 @@ while run:
     handBlitted = False
     for rectNum in renderRects:
         iterationB +=1
-        thisRed = rectRedToDraw[iterationB] - 1.2*lightLevels[iterationB]
-        thisGreen = rectGreenToDraw[iterationB] - 1.2*lightLevels[iterationB]
-        thisBlue = rectBlueToDraw[iterationB] - 1.2*lightLevels[iterationB]
+        thisRed = rectRedToDraw[iterationB] - 1*lightLevels[iterationB]
+        thisGreen = rectGreenToDraw[iterationB] - 1*lightLevels[iterationB]
+        thisBlue = rectBlueToDraw[iterationB] - 1*lightLevels[iterationB]
         if thisRed < 0:
             thisRed = 0
         if thisBlue < 0:
